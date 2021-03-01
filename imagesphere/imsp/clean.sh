@@ -1,2 +1,2 @@
-cd /tmp/imsp
+cd /opt/imsp
 rm input/*
