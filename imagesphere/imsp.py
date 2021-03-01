@@ -15,10 +15,10 @@ class imsp(commands.Cog):
         msg = await ctx.message.channel.send("processing...")
         async with ctx.typing():
             #response = requests.get(ctx.message.attachments[0].url)
-            # file = open("/opt/imsp/input.png", "wb")
+            # file = open("/tmp/imsp/input.png", "wb")
             # file.write(response.content)
             # file.close()
-            dl_command = '(ulimit -f $(({bytes}/512)); curl --max-filesize {bytes} -OJ {url})'
+            dl_command = ''
             if(urls or ctx.message.attachments):
                 attach = ctx.message.attachments[0].url if not urls else urls
             else:
@@ -26,13 +26,17 @@ class imsp(commands.Cog):
             if(not attach):
                 await ctx.send(content="Please provide an image")
             else:
-                #os.system("wget "+attach+' -P /opt/imsp/input/')
-                os.system("cd /opt/imsp/input; " + dl_command.format(bytes=100000000, url=attach))
-                os.system('bash /opt/imsp/imsp.sh')
-                image = io.open("/opt/imsp/out/out.gif", "rb")
+                if "tenor.com" in attach:
+                    dl_command = '(ulimit -f $(({bytes}/512)); curl --max-filesize {bytes} {url} -o tenor.gif)'
+                else:
+                    dl_command = '(ulimit -f $(({bytes}/512)); curl --max-filesize {bytes} -OJ {url})'
+                #os.system("wget "+attach+' -P /tmp/imsp/input/')
+                os.system("cd /tmp/imsp/input; " + dl_command.format(bytes=100000000, url=attach))
+                os.system('bash /tmp/imsp/imsp.sh')
+                image = io.open("/tmp/imsp/out/out.gif", "rb")
                 dcfile = discord.File(image, filename="sphere.gif")
                 await ctx.send(content = "", file = dcfile)
-                os.system('bash /opt/imsp/clean.sh')
+                os.system('bash /tmp/imsp/clean.sh')
             await msg.delete()  
 def setup(bot):
     bot.add_cog(imsp(bot))
