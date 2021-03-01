@@ -15,7 +15,7 @@ class imsp(commands.Cog):
         msg = await ctx.message.channel.send("processing...")
         async with ctx.typing():
             #response = requests.get(ctx.message.attachments[0].url)
-            # file = open("/tmp/imsp/input.png", "wb")
+            # file = open("/opt/imsp/input.png", "wb")
             # file.write(response.content)
             # file.close()
             dl_command = ''
@@ -30,13 +30,13 @@ class imsp(commands.Cog):
                     dl_command = '(ulimit -f $(({bytes}/512)); curl --max-filesize {bytes} {url} -o tenor.gif)'
                 else:
                     dl_command = '(ulimit -f $(({bytes}/512)); curl --max-filesize {bytes} -OJ {url})'
-                #os.system("wget "+attach+' -P /tmp/imsp/input/')
-                os.system("cd /tmp/imsp/input; " + dl_command.format(bytes=100000000, url=attach))
-                os.system('bash /tmp/imsp/imsp.sh')
-                image = io.open("/tmp/imsp/out/out.gif", "rb")
+                #os.system("wget "+attach+' -P /opt/imsp/input/')
+                os.system("cd /opt/imsp/input; " + dl_command.format(bytes=100000000, url=attach))
+                os.system('bash /opt/imsp/imsp.sh')
+                image = io.open("/opt/imsp/out/out.gif", "rb")
                 dcfile = discord.File(image, filename="sphere.gif")
                 await ctx.send(content = "", file = dcfile)
-                os.system('bash /tmp/imsp/clean.sh')
+                os.system('bash /opt/imsp/clean.sh')
             await msg.delete()  
 def setup(bot):
     bot.add_cog(imsp(bot))
